@@ -1,17 +1,22 @@
 #include "landscape.h"
 
-Landscape::Landscape()
+Landscape::Landscape(float arg_gridSize)
+{
+    this->gridSizef_=arg_gridSize;
+}
+
+void Landscape::updatePositions()
 {
 
 }
 
-void Landscape::renderMap()
+void Landscape::renderMap(Avatar &avatar_clone)
 {
-    fromX=avatar.view.getCenter().x / gridSizef -10;
-    toX=avatar.view.getCenter().x / gridSizef+11;
+    fromX=avatar_clone.view.getCenter().x / gridSizef_ -10;
+    toX=avatar_clone.view.getCenter().x / gridSizef_+11;
 
-    fromY=avatar.view.getCenter().y / gridSizef-6;
-    toY=avatar.view.getCenter().y / gridSizef+7;
+    fromY=avatar_clone.view.getCenter().y / gridSizef_-6;
+    toY=avatar_clone.view.getCenter().y / gridSizef_+7;
 
     if(fromX<0)
         fromX=0;
@@ -37,15 +42,10 @@ void Landscape::renderMap()
 void Landscape::initializeMap()
 {
 
-    if (!windTemple.loadFromFile("F:/QtCreator/MyDocuments/Airbender_Game/Textures/airKingdomGround.png")) {
+    if (!windTemple.loadFromFile("F:/QtCreator/MyDocuments/Airbender_Game/Textures/waterKingdom.png")) {
         std::cerr << "Could not load texture" << std::endl;
     }
-//    texture_grass.setRepeated(true);
-//    sf::Sprite grass;
-//    grass.setTexture(texture_grass);
-//    grass.setTextureRect(sf::IntRect(0, 0, 800, 600));
     windTemple.setRepeated(true);
-
     tileMap.resize(mapSize,std::vector<sf::Sprite>());
 
     for (int x=0; x<mapSize;x++)
@@ -55,11 +55,11 @@ void Landscape::initializeMap()
         {
             tileMap[x][y].setTexture(windTemple);
 //            tileMap[x][y].setTextureRect(sf::IntRect(0,0,100,100));
-            tileMap[x][y].setScale(0.2,0.2);
+            tileMap[x][y].setScale(1.2,1.2);
 //            tileMap[x][y].setFillColor(sf::Color::White);
 //            tileMap[x][y].setOutlineThickness(1.f);
 //            tileMap[x][y].setOutlineColor(sf::Color::Black);
-            tileMap[x][y].setPosition(x*gridSizef,y*gridSizef);
+            tileMap[x][y].setPosition(x*gridSizef_,y*gridSizef_);
 
         }
     }

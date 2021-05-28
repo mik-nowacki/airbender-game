@@ -14,8 +14,6 @@ public:
 
     void shooting(Projectile &bullet, std::vector<sf::RectangleShape> &enemies);
 
-
-
 };
 
 #endif // PROJECTILE_H

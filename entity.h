@@ -11,6 +11,7 @@ public:
     sf::RectangleShape shape;
     sf::Sprite sprite;
     sf::Text text;
+
 };
 
 #endif // ENTITY_H

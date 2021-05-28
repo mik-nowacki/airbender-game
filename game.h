@@ -12,9 +12,8 @@
 
 class Game
 {
-//    Avatar avatar;
-    Landscape landscape;
     std::vector<Enemy> enemies;
+    Enemy enemy;
 
     sf::RenderWindow *window;
 
@@ -32,12 +31,13 @@ class Game
     sf::Vector2u mousePosGrid;
 
     float gridSizef=100.f;
+    float dt;
 
 public:
     Game();
     void run();
 //    void shooting(Projectile *bullet, std::vector<sf::RectangleShape> &enemies);
-    void shooting(Projectile &bullet, std::vector<Enemy> &enemies);
+    void shooting(Projectile &bullet, std::vector<Enemy> &enemies,float dt_);
 
 };
 

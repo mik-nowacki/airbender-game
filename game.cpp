@@ -6,41 +6,14 @@ Game::Game()
     this->window->setFramerateLimit(144);
 }
 
-void Game::shooting(Projectile &bullet, std::vector<Enemy> &enemies)
-{
-    playerCenter = sf::Vector2f(landscape.avatar.rectangle.getPosition().x+(0.5*landscape.avatar.rectangle.getGlobalBounds().width),landscape.avatar.rectangle.getPosition().y+0.5*landscape.avatar.rectangle.getGlobalBounds().height);
-    mousePos = sf::Vector2f(mousePosView);
-    aimDirection = mousePos-playerCenter;
-    aimDirNorm = aimDirection / sqrt(powf(aimDirection.x,2)+powf(aimDirection.y,2));
-
-
-    if(sf::Keyboard::isKeyPressed(sf::Keyboard::Q))
-    {
-        bullet.shape.setPosition(playerCenter);
-        bullet.speedVector=aimDirNorm*bullet.maxSpeed;
-
-        shots.emplace_back(bullet);
-    }
-    for(size_t i =0; i<shots.size(); i++)
-    {
-        shots[i].shape.move(shots[i].speedVector);
-    }
-    for(size_t i =0; i<shots.size();i++)
-    {
-        for(size_t k =0; k<enemies.size();k++)
-        if(shots[i].shape.getGlobalBounds().intersects(enemies[k].shape.getGlobalBounds()))
-        {
-            shots.erase(shots.begin()+i);
-            enemies.erase(enemies.begin()+k);
-
-        }
-    }
-}
-
 void Game::run()
 {
+    Avatar avatar;
+//    avatar.animate();
+    Landscape landscape(gridSizef);
 
-    landscape.avatar.rectangle.setPosition(landscape.avatar.view.getCenter());
+    avatar.shape.setPosition(avatar.view.getCenter());
+//    landscape.gridSizef_=gridSizef;
 
     unsigned gridSizeu=static_cast<unsigned>(gridSizef);
 
@@ -48,8 +21,8 @@ void Game::run()
 
     //VIEW
 
-    landscape.avatar.view.setSize(window->getSize().x,window->getSize().y);
-    landscape.avatar.view.setCenter(window->getSize().x/2.f,window->getSize().y/2.f);
+    avatar.view.setSize(window->getSize().x,window->getSize().y);
+    avatar.view.setCenter(window->getSize().x/2.f,window->getSize().y/2.f);
 
     // TILE SELECTOR
 
@@ -70,18 +43,31 @@ void Game::run()
 //    enemy->setFillColor(sf::Color::Red);
 
     int spawnCounter = 20;
+
+    // DELTA TIME
+    sf::Clock fps_clock;
 ///#################################################################################///
                                 // GAME LOOP //
 ///#################################################################################///
 
     while (window->isOpen())
     {
+     // GETTING DELTA TIME
+
+        sf::Time deltaTime = fps_clock.restart();
 
     // MOUSE POSITION
+
         mousePosScreen=sf::Mouse::getPosition();
         mousePosWindow=sf::Mouse::getPosition(*window);
-        window->setView(landscape.avatar.view);
+
+        avatar.mousePosScreen=sf::Mouse::getPosition();
+        avatar.mousePosWindow=sf::Mouse::getPosition(*window);
+
+        window->setView(avatar.view);
+
         mousePosView=window->mapPixelToCoords(mousePosWindow);
+        avatar.mousePosView=window->mapPixelToCoords(mousePosWindow);
         if(mousePosView.x>=0.f)
         mousePosGrid.x = mousePosView.x / gridSizeu;
         if(mousePosView.y>=0.f)
@@ -90,15 +76,15 @@ void Game::run()
 //        window->setView(window->getDefaultView());
 
     // TILE SELECTOR
+
         tileSelector.setPosition(mousePosGrid.x*gridSizef,mousePosGrid.y*gridSizef);
 
           std::cout << "Screen: " << mousePosScreen.x<<" "<<mousePosScreen.y<<std::endl
                     << "Window: " << mousePosWindow.x<<" "<<mousePosWindow.y<<std::endl
                     << "View: " << mousePosView.x<<" "<<mousePosView.y<<std::endl
                     << "Grid: " << mousePosGrid.x<<" "<<mousePosGrid.y<<std::endl;
-
-
     // EVENTS
+
         sf::Event event;
         while (window->pollEvent(event))
         {
@@ -106,9 +92,11 @@ void Game::run()
                 window->close();
         }
         window->clear();
-        window->setView(landscape.avatar.view);
+        window->setView(avatar.view);
 
-        landscape.renderMap();
+    // DRAW MAP
+
+        landscape.renderMap(avatar);
 
         for (int x=landscape.fromX;x<landscape.toX;x++)
         {
@@ -116,37 +104,34 @@ void Game::run()
             {
                 window->draw(landscape.tileMap[x][y]);
             }
-
         }
-
-    // NEEDS CLEARENCE
-        window->setView(landscape.avatar.view);
 
         window->draw(tileSelector);
 
-    // SPAWN ENEMIES
+    // SPAWN & DRAW ENEMIES
 
         if(spawnCounter<20)
             spawnCounter++;
         if(spawnCounter>=20 && enemies.size() < 100)
         {
-            Enemy enemy;
             enemies.emplace_back(enemy);
             spawnCounter=0;
         }
 
         for (auto &i : enemies)
         {
-           window->draw(i.sprite);
+           window->draw(i.shape);
         }
 
-        shooting(*bullet, enemies);
-        landscape.avatar.steering();
-        for(auto &i : shots)
+    // DRAW AVATAR
+
+        avatar.shooting(*bullet, enemies, deltaTime.asSeconds());
+        avatar.animate(deltaTime.asSeconds());
+        for(auto &i : avatar.shots)
         {
             window->draw(i.shape);
         }
-        window->draw(landscape.avatar.rectangle);
+        window->draw(avatar.sprite);
 
         window->setView(window->getDefaultView());
         window->display();
