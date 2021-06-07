@@ -1,13 +1,9 @@
 #include "landscape.h"
 
-Landscape::Landscape(float arg_gridSize)
+Landscape::Landscape()
 {
-    this->gridSizef_=arg_gridSize;
-}
-
-void Landscape::updatePositions()
-{
-
+    this->gridSizef_=100.f;
+//    this->texture = *land_tex;
 }
 
 void Landscape::renderMap(Avatar &avatar_clone)
@@ -39,13 +35,9 @@ void Landscape::renderMap(Avatar &avatar_clone)
         toY=mapSize-1;
 }
 
-void Landscape::initializeMap()
+void Landscape::initializeMap(const int &mapSize_from_game, sf::Texture *change)
 {
-
-    if (!windTemple.loadFromFile("F:/QtCreator/MyDocuments/Airbender_Game/Textures/waterKingdom.png")) {
-        std::cerr << "Could not load texture" << std::endl;
-    }
-    windTemple.setRepeated(true);
+    this->mapSize = mapSize_from_game;
     tileMap.resize(mapSize,std::vector<sf::Sprite>());
 
     for (int x=0; x<mapSize;x++)
@@ -53,14 +45,10 @@ void Landscape::initializeMap()
         tileMap[x].resize(mapSize,sf::Sprite());
         for (int y=0; y<mapSize;y++)
         {
-            tileMap[x][y].setTexture(windTemple);
-//            tileMap[x][y].setTextureRect(sf::IntRect(0,0,100,100));
-            tileMap[x][y].setScale(1.2,1.2);
-//            tileMap[x][y].setFillColor(sf::Color::White);
-//            tileMap[x][y].setOutlineThickness(1.f);
-//            tileMap[x][y].setOutlineColor(sf::Color::Black);
+            tileMap[x][y].setTexture(*change);
+            tileMap[x][y].setTextureRect(sf::IntRect(0,0,100,100));
             tileMap[x][y].setPosition(x*gridSizef_,y*gridSizef_);
-
         }
     }
+
 }

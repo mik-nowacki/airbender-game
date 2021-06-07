@@ -1,38 +1,63 @@
 #include "projectile.h"
 
-Projectile::Projectile(float radius) : speedVector(0.f,0.f), maxSpeed(15.f)
+Projectile::Projectile()
 {
-      this->shape.setFillColor(sf::Color::Magenta);
-      this->shape.setRadius(radius);
+}
+void Projectile::launchProjectile(sf::Vector2f &shooter, sf::Vector2f &target)
+{
+    this->setPosition(shooter);
+    this->aimDirection = target - shooter;
+    this->aimDirNorm = aimDirection / float(sqrt(powf(aimDirection.x,2.f)+powf(aimDirection.y,2.f)));
+    this->speedVector=aimDirNorm*maxSpeed;
+
+    this->rotate(atan2f(aimDirNorm.y,aimDirNorm.x)*(180/3.141592653589793238463));
+
 }
 
-//void Projectile::shooting(Projectile &bullet, std::vector<sf::RectangleShape> &enemies)
-//{
-//    playerCenter = sf::Vector2f(landscape.avatar.rectangle.getPosition().x+(0.5*landscape.avatar.rectangle.getGlobalBounds().width),landscape.avatar.rectangle.getPosition().y+0.5*landscape.avatar.rectangle.getGlobalBounds().height);
-//    mousePos = sf::Vector2f(mousePosView);
-//    aimDirection = mousePos-playerCenter;
-//    aimDirNorm = aimDirection / sqrt(powf(aimDirection.x,2)+powf(aimDirection.y,2));
+void Projectile::update_movement(float dt_)
+{
+        this->move(this->speedVector*dt_);
+}
+bool Projectile::is_hit(sf::RectangleShape &target)
+{
+    if(this->getGlobalBounds().intersects(target.getGlobalBounds()))
+        return true;
+    else
+        return false;
+}
 
+void Projectile::make_tempest(sf::Texture *tex, short ability)
+{
+    this->texture=tex;
+    this->setTexture(*texture);
+    this->maxSpeed = 600.f;
+    this->type = ability;
 
-//    if(sf::Keyboard::isKeyPressed(sf::Keyboard::Q))
-//    {
-//        bullet.shape.setPosition(playerCenter);
-//        bullet.speedVector=aimDirNorm*bullet.maxSpeed;
+}
+void Projectile::make_iceCone(sf::Texture *tex, short ability)
+{
+    this->texture = tex;
+    this->setTexture(*texture);
+    this->setScale(0.15,0.15);
+    this->maxSpeed = 400;
+    this->type = ability;
 
-//        shots.emplace_back(bullet);
-//    }
-//    for(size_t i =0; i<shots.size(); i++)
-//    {
-//        shots[i].shape.move(shots[i].speedVector);
-//    }
-//    for(size_t i =0; i<shots.size();i++)
-//    {
-//        for(size_t k =0; k<enemies.size();k++)
-//        if(shots[i].shape.getGlobalBounds().intersects(enemies[k].getGlobalBounds()))
-//        {
-//            shots.erase(shots.begin()+i);
-//            enemies.erase(enemies.begin()+k);
+}
 
-//        }
-//    }
-//}
+void Projectile::make_fireball(sf::Texture *tex, short ability)
+{
+    this->texture = tex;
+    this->setTexture(*texture);
+    this -> setTextureRect(sf::IntRect(70,86,110,54));
+    this->maxSpeed = 500;
+    this->type = ability;
+
+}
+void Projectile::make_boulder(sf::Texture *tex, short ability)
+{
+    this->texture = tex;
+    this->setTexture(*texture);
+    this->maxSpeed = 250;
+    this->type = ability;
+}
+

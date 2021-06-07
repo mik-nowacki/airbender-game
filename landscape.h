@@ -4,15 +4,15 @@
 #include <SFML/Graphics.hpp>
 #include <iostream>
 #include "avatar.h"
+#include <memory>
 
 class Landscape
 {
 public:
-    Landscape(float gridSize);
+    Landscape();
 
-    void updatePositions();                 //Updtaes all positions: view, mouse etc.
     void renderMap(Avatar &avatar_clone);   // draw tiles only in the VIEW
-    void initializeMap();                   // initalize ENTIRE map
+    void initializeMap(const int &mapSize_from_game,sf::Texture *change);  // initalize ENTIRE map
 
     std::vector<std::vector<sf::Sprite>> tileMap;   // all map tiles in one place :)
     int fromX=0;
@@ -20,11 +20,11 @@ public:
     int fromY=0;
     int toY=0;
     float gridSizef_ =100.f;
-private:
-//    unsigned gridSizeu=static_cast<unsigned>(gridSizef);
-    const int mapSize = 100;
-    sf::Texture windTemple;
 
+protected:
+//    unsigned gridSizeu=static_cast<unsigned>(gridSizef);
+    sf::Texture texture;
+    int mapSize;
     sf::RectangleShape tileSelector;
     sf::RectangleShape grid;
     sf::Vector2i mousePosScreen;

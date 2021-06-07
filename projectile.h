@@ -3,17 +3,37 @@
 
 #include <SFML/Graphics.hpp>
 
-class Projectile
+#include <string>
+#include <cmath>
+#include <iostream>
+
+class Projectile :public sf::Sprite
 {
 public:
-    Projectile(float radius = 5.f);
+    Projectile();
 
-    sf::CircleShape shape;
+    sf::Vector2f aimDirection;
+    sf::Vector2f aimDirNorm;
     sf::Vector2f speedVector;
-    float maxSpeed;
+    sf::Sprite sprite;
+    sf::Texture *texture;
+    short type;
 
-    void shooting(Projectile &bullet, std::vector<sf::RectangleShape> &enemies);
+    void launchProjectile(sf::Vector2f &shooter, sf::Vector2f &target);
+    void update_movement(float dt_);
+    bool is_hit(sf::RectangleShape &target);
 
+// make abilites
+    void make_tempest(sf::Texture* tex, short ability);
+    void make_iceCone(sf::Texture* tex, short ability);
+    void make_fireball(sf::Texture* tex, short ability);
+
+    void make_boulder(sf::Texture* tex, short ability);
+
+protected:
+    sf::RectangleShape shape;
+    float maxSpeed=100;
+private:
 };
 
 #endif // PROJECTILE_H

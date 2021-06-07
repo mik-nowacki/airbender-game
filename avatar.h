@@ -3,63 +3,63 @@
 
 #include <cmath>
 
-#include "projectile.h"
 #include "entity.h"
-#include "enemy.h"
-
-enum ANIMATION_STATES {IDLE = 0, MOVING_UP, MOVING_DOWN, MOVING_LEFT, MOVING_RIGHT};
 
 class Avatar :public Entity
 {
 public:
-    Avatar(float x = 100.f, float y = 100.f,float width = 100.f, float height = 100.f);
+    Avatar(sf::RectangleShape &game_boarder);
 
  // VARIABLES
 
-    std::vector<Projectile> shots;
-
-    sf::View view; // View coordinates
-    sf::Vector2i mousePosScreen;
-    sf::Vector2i mousePosWindow;
+    sf::View view;
     sf::Vector2f mousePosView;
-    sf::Vector2u mousePosGrid;
-
-    sf::Vector2f playerCenter;
     sf::Vector2f mousePos;
-    sf::Vector2f aimDirection;
-    sf::Vector2f aimDirNorm;
+    sf::RectangleShape trigger_area;
 
-    sf::Texture avatar_Sheet;
-    sf::Clock animation_timer;
-
-    std::vector<sf::IntRect> idle = {sf::IntRect(5,20,23,34),sf::IntRect(28,20,23,34),sf::IntRect(52,20,23,34),sf::IntRect(77,20,23,34),sf::IntRect(102,20,23,34),sf::IntRect(128,20,23,34),sf::IntRect(152,20,23,34),sf::IntRect(175,20,23,34)}; //8
-    unsigned idle_counter=0;
-    std::vector<sf::IntRect> walkUp = {sf::IntRect(20,548,26,32),sf::IntRect(46,548,26,32),sf::IntRect(72,548,26,32),sf::IntRect(98,548,26,32),sf::IntRect(124,548,26,32),sf::IntRect(150,548,26,32),sf::IntRect(176,548,26,32),
-                                      sf::IntRect(202,548,26,32),sf::IntRect(228,548,26,32),sf::IntRect(254,548,26,32),sf::IntRect(280,548,26,32)}; //11
-    unsigned up_counter=0;
-    std::vector<sf::IntRect> walkDown = {sf::IntRect(19,439,21,32),sf::IntRect(40,439,21,32),sf::IntRect(61,439,21,32),sf::IntRect(82,439,21,32),sf::IntRect(103,439,21,32),sf::IntRect(124,439,21,32),
-                                        sf::IntRect(145,439,21,32),sf::IntRect(166,439,21,32),sf::IntRect(187,439,21,32),sf::IntRect(208,439,21,32)}; //10
-    unsigned down_counter=0;
-    std::vector<sf::IntRect> walkLeft = {sf::IntRect(85,202,27,33),sf::IntRect(112,202,27,33),sf::IntRect(140,202,27,33),sf::IntRect(167,202,27,33)}; //4
-    unsigned left_counter=0;
-    std::vector<sf::IntRect> walkRight = {sf::IntRect(17,82,26,34),sf::IntRect(44,82,26,34),sf::IntRect(70,82,26,34),sf::IntRect(98,82,26,34)}; //4
-    unsigned right_counter=0;
-
-    float avatar_movement_speed=700.f;
-    bool moving = false;
     short animState;
+    short chosen_element;
 
-  // FUNCTIONS
+    std::vector<bool>permission = {false, false, false, false, false, false, false,false, false, false, false, false};
+
+  // METHODS
 
     void steering(float dt_); // Avatar + Camera movement
-    void setMousePositions();
-    void shooting(Projectile &bullet, std::vector<Enemy> &enemies, float dt_);
-    void updateMousePosition();
+    void shooting(float dt_);
     void animate(float dt_);
-    void idle_animation();
+    void movement_animation();
+    void get_textures(std::vector<sf::Texture> *mv_game, std::vector<sf::Texture> *at_game, std::vector<sf::Texture> *sk_game);
+    void attack_animation();
 
 private:
-//    void get_texture();
+    float avatar_movement_speed=500.f;
+    sf::Vector2f  start_pos={900.f,500.f};
+
+ // MOVING VARS
+    std::vector<sf::Texture> move_textures, attack_textures, skill_textures;
+    std::vector<sf::Vector2u> walkSize, attackSize;
+    unsigned idle_counter=0, up_counter=0, down_counter=0, left_counter=0, right_counter=0;
+
+ // SHOOTING VARS
+    bool shot = false;
+    float angle;
+    sf::Vector2f shooter_center;
+    Projectile *projectile;
+
+ // ABILITY VARS
+    float element_swap=2;
+    float on_cooldown = 10; //??? NEEDS CHANGE
+    std::vector<float> ability_cooldown = {1,10,5}; //BASIC, PASSIVE, SUPER
+    std::pair<bool,float> passive_timer; // duration 5s
+    float armor;  // +75 HP TEMPORARLY
+    float add_dmg=0; // +25 DMG
+    std::pair<bool,float> heal = {false,0}; // HEALS 5 HP EVERY SECOND
+
+ // ATTACK ANIM VARS
+    float pause_time = 0.5;
+    float attack_anim_timer = pause_time;
+    unsigned at_counter = 0 ;
+
 };
 
 #endif // AVATAR_H
