@@ -9,6 +9,7 @@ class EarthStage :public Game
 public:
     EarthStage();
     virtual void spawn_creatures();
+    virtual void upload_waves();
 };
 
 #endif // EARTHSTAGE_H

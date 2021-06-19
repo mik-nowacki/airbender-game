@@ -6,12 +6,10 @@
 class Dummy :public Enemy
 {
 public:
-    Dummy(sf::Texture *look_from_game);
-
-
-    virtual void walk_animate();
-    virtual void attack_animate(float &angle_from_trigger);
-
+    Dummy(sf::Texture *look_from_game,sf::Texture *skill_look_from_game,sf::RectangleShape &game_boarder);
+    virtual ~Dummy();
+protected:
+    virtual void hit_box_position();
 };
 
 #endif // DUMMY_H

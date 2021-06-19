@@ -1,23 +1,8 @@
-#include "firestage.h"
-#include "menu.h"
+#include "state.h"
 
 int main()
 {
-//    Menu menu;
-//    menu.openMenu();
-
-    AirStage air_stage;
-        air_stage.run();
-
-//    WaterStage water_stage;
-//        water_stage.run();
-
-//    EarthStage earth_stage;
-//    earth_stage.run();
-
-//    FireStage fire_stage;
-//    fire_stage.run();
-
-
+    std::unique_ptr<State> program = std::make_unique<State>();
+    program->initialie_program();
     return 0;
 }

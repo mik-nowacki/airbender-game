@@ -1,34 +1,36 @@
 #include "golem.h"
 
-Golem::Golem(sf::Texture *look_from_game, sf::Texture *skill_look_from_game,sf::RectangleShape &game_boarder)
+Golem::Golem(sf::Texture *look_from_game, sf::Texture *skill_look_from_game,sf::RectangleShape &game_boarder) : Enemy(look_from_game,skill_look_from_game,game_boarder)
 {
-    this->setPosition(sf::Vector2f(rand()%1800,rand()%1800));
-    this->map_edge = game_boarder;
-    this->clock.restart();
-    move_dir = rand()%5;
-
-// transfering looks
-    this->look=look_from_game;
     this->setScale(4.f,4.f);
-    this->setTexture(*look);
-
     textureSize = this->look->getSize();
     textureSize.x /=5;
     this->setTextureRect(sf::IntRect(textureSize.x*0, 0,textureSize.x,textureSize.y));
 
-    this->skill_look=skill_look_from_game;
-    this->ability.setTexture(*skill_look);
+    hit_box.setSize(sf::Vector2f(35.f*4, 40.f*4));
 
     this->enemy_type = GOLEM;
 
-    this->HP=500;
+    this->HP=200;
     this->if_triggered =false;
     this->shoot_timer=1000;
+
+    bar.setSize(sf::Vector2f(HP,20));
+    bar_back.setSize(sf::Vector2f(HP,20));
+    bar.setOrigin(bar.getSize().x/2,bar.getSize().y/2);
+    bar_back.setOrigin(bar.getSize().x/2,bar.getSize().y/2);
+    bar.setFillColor(sf::Color::Red);
+    bar_back.setFillColor(sf::Color(25,25,25,200));
 }
 
 Golem::~Golem()
 {
 
+}
+
+void Golem::hit_box_position()
+{
+    this->hit_box.setPosition(sf::Vector2f(this->getPosition().x+45.f,this->getPosition().y+30));
 }
 
 void Golem::walk_animate()

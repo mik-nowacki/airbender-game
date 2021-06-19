@@ -11,8 +11,9 @@ class Landscape
 public:
     Landscape();
 
-    void renderMap(Avatar &avatar_clone);   // draw tiles only in the VIEW
-    void initializeMap(const int &mapSize_from_game,sf::Texture *change);  // initalize ENTIRE map
+    void drawMap(sf::RenderTarget &win, Avatar &avatar_clone);
+    void renderMap(Avatar &avatar_clone);   // render tiles only in the VIEW
+    void initializeMap(const int &mapSize_from_game,sf::Texture *front,sf::Texture &back);
 
     std::vector<std::vector<sf::Sprite>> tileMap;   // all map tiles in one place :)
     int fromX=0;
@@ -22,6 +23,7 @@ public:
     float gridSizef_ =100.f;
 
 protected:
+    void initalizeBackground(sf::Texture &back);
 //    unsigned gridSizeu=static_cast<unsigned>(gridSizef);
     sf::Texture texture;
     int mapSize;
@@ -31,6 +33,7 @@ protected:
     sf::Vector2i mousePosWindow;
     sf::Vector2f mousePosView;
     sf::Vector2u mousePosGrid;
+    sf::Sprite cur_back;
 
 };
 

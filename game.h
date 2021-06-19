@@ -11,79 +11,55 @@
 
 class Game
 {
+public:
+    Game();
+    virtual void run();
+    int getAvatarHP();
 protected:
-
- // AIM POSITION
-    sf::Vector2f playerCenter;
-    sf::Vector2f mousePos;
-    sf::Vector2f aimDirection;
-    sf::Vector2f aimDirNorm;
-
- // MOUSE POSITIONS
-    sf::Vector2i mousePosScreen;
-    sf::Vector2i mousePosWindow;
-    sf::Vector2f mousePosView;
-    sf::Vector2u mousePosGrid;
-
-    sf::Clock clock;
+    std::unique_ptr<sf::RenderWindow> window;
 
  // TEXTURE VARIABLES
-
-    sf::Texture avatar_sheet;
     sf::Texture appa_tex;
     sf::Texture default_enemy;
     std::vector<sf::Texture> enemy_tex;
-
-    std::vector<sf::Texture> lands;
-    std::vector<sf::Texture> avatar_walks;
+    std::vector<sf::Texture> lands, backgroudns;
+    std::vector<sf::Texture> benders, icons, buttons;
+    std::vector<sf::Texture> avatar_walks, avatar_attacks;
     std::vector<sf::Texture> abilities;
-    std::vector<sf::Texture> avatar_attacks;
-
-
     std::vector<sf::Texture> altar_stages;
 
  // KINGDOMS
     int mapSize=20;
     sf::RectangleShape mapBoarder;
+    std::unique_ptr<Landscape> current_kingdom;
 
-    Landscape *current_kingdom;
-
-//    std::vector <Environment*> environment;
+    std::unique_ptr<Story> story;
 
  // ENTITIES
-    std::vector<Enemy*> enemies;
-    std::vector<Enemy*> dead;
-    Avatar *avatar;
+    std::vector<std::shared_ptr<Enemy>> enemies;
+    std::vector<std::shared_ptr<Enemy>> dead;
+    std::unique_ptr<Avatar> avatar;
 
  // OTHER VARIABLES
     float gridSizef=100.f;
-    float dt;
 
  // SPAWNING ENEMIES
-//    if(spawn_clock.getElapsedTime().asSeconds()>=5&&creatures_counter<=max_creatures) CAN BE USEFUL!
-    sf::Clock spawn_clock;
     int soldiers_counter = 0;
     int creatures_counter = 0;
-    int max_soldiers = 30;
+    int max_soldiers = 5;
     int max_creatures;
-    int dead_creatures = 0;
 
  // METHODS
     void spawn_environment();
     void spawn_soldiers();
     virtual void spawn_creatures();
+    virtual void upload_waves();
     void check_for_hits();
     void dead_shots();
     void enemy_hits(Enemy &arg_enemies);
     void load_textures();
 
     short stage;
-
-public:
-    sf::RenderWindow *window;
-    Story *story;
-    Game();
-    virtual void run();
 };
 
 #endif // GAME_H

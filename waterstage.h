@@ -9,6 +9,7 @@ class WaterStage :public Game
 public:
     WaterStage();
     virtual void spawn_creatures();
+    virtual void upload_waves();
 };
 
 #endif // WATERSTAGE_H

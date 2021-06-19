@@ -4,6 +4,8 @@
 #include <SFML/Graphics.hpp>
 #include <SFML/Window.hpp>
 
+#include <memory>
+
 
 class Menu
 {
@@ -12,8 +14,8 @@ public:
     void openMenu();
 
 private:
-    sf::RenderWindow *menu_window;
-    sf::Sprite *button;
+    std::unique_ptr<sf::RenderWindow> menu_window;
+    sf::Sprite button;
     sf::Sprite new_game;
     sf::Sprite options;
     sf::Texture menu_texture;

@@ -7,11 +7,12 @@ SOURCES += \
         airstage.cpp \
         avatar.cpp \
         boss.cpp \
+        bossstage.cpp \
         dummy.cpp \
         earthstage.cpp \
         enemy.cpp \
         entity.cpp \
-        environment.cpp \
+        firecircle.cpp \
         firestage.cpp \
         game.cpp \
         golem.cpp \
@@ -21,6 +22,7 @@ SOURCES += \
         projectile.cpp \
         slime.cpp \
         soldier.cpp \
+        state.cpp \
         story.cpp \
         waterstage.cpp \
         worm.cpp
@@ -41,11 +43,12 @@ HEADERS += \
     airstage.h \
     avatar.h \
     boss.h \
+    bossstage.h \
     dummy.h \
     earthstage.h \
     enemy.h \
     entity.h \
-    environment.h \
+    firecircle.h \
     firestage.h \
     game.h \
     golem.h \
@@ -54,6 +57,7 @@ HEADERS += \
     projectile.h \
     slime.h \
     soldier.h \
+    state.h \
     story.h \
     waterstage.h \
     worm.h
