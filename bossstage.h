@@ -9,6 +9,7 @@ class BossStage :public Game
 public:
     BossStage();
 
+private:
     virtual void spawn_creatures();
     virtual void upload_waves();
 };

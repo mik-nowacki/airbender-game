@@ -16,11 +16,18 @@ public:
     virtual void run();
     int getAvatarHP();
 protected:
+    // METHODS
+       void spawn_soldiers();
+       virtual void spawn_creatures();
+       virtual void upload_waves();
+       void check_for_hits();
+       void enemy_hits(Enemy &arg_enemies);
+       void load_textures();
+
     std::unique_ptr<sf::RenderWindow> window;
 
  // TEXTURE VARIABLES
     sf::Texture appa_tex;
-    sf::Texture default_enemy;
     std::vector<sf::Texture> enemy_tex;
     std::vector<sf::Texture> lands, backgroudns;
     std::vector<sf::Texture> benders, icons, buttons;
@@ -44,20 +51,11 @@ protected:
     float gridSizef=100.f;
 
  // SPAWNING ENEMIES
+    int enemy_id=1;
     int soldiers_counter = 0;
     int creatures_counter = 0;
     int max_soldiers = 5;
     int max_creatures;
-
- // METHODS
-    void spawn_environment();
-    void spawn_soldiers();
-    virtual void spawn_creatures();
-    virtual void upload_waves();
-    void check_for_hits();
-    void dead_shots();
-    void enemy_hits(Enemy &arg_enemies);
-    void load_textures();
 
     short stage;
 };

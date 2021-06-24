@@ -1,6 +1,6 @@
 #include "worm.h"
 
-Worm::Worm(sf::Texture *look_from_game, sf::Texture *skill_look_from_game,sf::RectangleShape &game_boarder) : Enemy(look_from_game,skill_look_from_game,game_boarder)
+Worm::Worm(int &arg_id, sf::Texture *look_from_game, sf::Texture *skill_look_from_game,sf::RectangleShape &game_boarder) : Enemy(arg_id,look_from_game,skill_look_from_game,game_boarder)
 {
     this->setScale(3.f,3.f);
 
@@ -8,7 +8,7 @@ Worm::Worm(sf::Texture *look_from_game, sf::Texture *skill_look_from_game,sf::Re
     textureSize.x /=6;
     this->setTextureRect(sf::IntRect(textureSize.x*0, 0,textureSize.x,textureSize.y));
 
-    hit_box.setSize(sf::Vector2f(130,75));
+    hit_box.setSize(sf::Vector2f(30,60));
 
     this->enemy_type = WORM;
 
@@ -26,7 +26,7 @@ Worm::Worm(sf::Texture *look_from_game, sf::Texture *skill_look_from_game,sf::Re
 
 Worm::~Worm(){}
 
-void Worm::hit_box_position(){this->hit_box.setPosition(sf::Vector2f(this->getPosition().x+60,this->getPosition().y+40));}
+void Worm::hit_box_position(){this->hit_box.setPosition(sf::Vector2f(this->getPosition().x+90,this->getPosition().y+50));}
 
 void Worm::walk_animate()
 {

@@ -1,19 +1,19 @@
 #include "golem.h"
 
-Golem::Golem(sf::Texture *look_from_game, sf::Texture *skill_look_from_game,sf::RectangleShape &game_boarder) : Enemy(look_from_game,skill_look_from_game,game_boarder)
+Golem::Golem(int &arg_id, sf::Texture *look_from_game, sf::Texture *skill_look_from_game,sf::RectangleShape &game_boarder) : Enemy(arg_id,look_from_game,skill_look_from_game,game_boarder)
 {
     this->setScale(4.f,4.f);
     textureSize = this->look->getSize();
     textureSize.x /=5;
     this->setTextureRect(sf::IntRect(textureSize.x*0, 0,textureSize.x,textureSize.y));
 
-    hit_box.setSize(sf::Vector2f(35.f*4, 40.f*4));
+    hit_box.setSize(sf::Vector2f(18.f*4, 25.f*4));
 
     this->enemy_type = GOLEM;
 
     this->HP=200;
     this->if_triggered =false;
-    this->shoot_timer=1000;
+    this->shoot_timer=500;
 
     bar.setSize(sf::Vector2f(HP,20));
     bar_back.setSize(sf::Vector2f(HP,20));
@@ -28,10 +28,7 @@ Golem::~Golem()
 
 }
 
-void Golem::hit_box_position()
-{
-    this->hit_box.setPosition(sf::Vector2f(this->getPosition().x+45.f,this->getPosition().y+30));
-}
+void Golem::hit_box_position(){this->hit_box.setPosition(sf::Vector2f(this->getPosition().x+80.f,this->getPosition().y+50));}
 
 void Golem::walk_animate()
 {
@@ -56,7 +53,5 @@ void Golem::attack_animate(float &angle_from_trigger)
         this->setTextureRect(sf::IntRect(textureSize.x*4, 0,textureSize.x,textureSize.y)); // DOWN
     if (angle_from_trigger>135 || angle_from_trigger<=-135 )
         this->setTextureRect(sf::IntRect(textureSize.x*4, 0,textureSize.x,textureSize.y)); // LEFT
-
-
 
 }

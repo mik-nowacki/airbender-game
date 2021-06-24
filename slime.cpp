@@ -1,6 +1,6 @@
 #include "slime.h"
 
-Slime::Slime(sf::Texture *look_from_game, sf::Texture *skill_look_from_game,sf::RectangleShape &game_boarder) : Enemy(look_from_game,skill_look_from_game,game_boarder)
+Slime::Slime(int &arg_id, sf::Texture *look_from_game, sf::Texture *skill_look_from_game,sf::RectangleShape &game_boarder) : Enemy(arg_id,look_from_game,skill_look_from_game,game_boarder)
 {
         this->setScale(3.f,3.f);
 
@@ -8,7 +8,7 @@ Slime::Slime(sf::Texture *look_from_game, sf::Texture *skill_look_from_game,sf::
         textureSize.x /=6;
         this->setTextureRect(sf::IntRect(textureSize.x*0, 0,textureSize.x,textureSize.y));
 
-        hit_box.setSize(sf::Vector2f(90,65));
+        hit_box.setSize(sf::Vector2f(20,30));
 
         this->enemy_type = SLIME;
 
@@ -26,7 +26,7 @@ Slime::Slime(sf::Texture *look_from_game, sf::Texture *skill_look_from_game,sf::
 }
 Slime::~Slime(){}
 
-void Slime::hit_box_position(){ this->hit_box.setPosition(sf::Vector2f(this->getPosition().x,this->getPosition().y));}
+void Slime::hit_box_position(){ this->hit_box.setPosition(sf::Vector2f(this->getPosition().x+30,this->getPosition().y+25));}
 
 void Slime::attack_animate(float &angle_from_trigger)
 {

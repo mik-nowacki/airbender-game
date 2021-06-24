@@ -6,9 +6,9 @@
 class Dummy :public Enemy
 {
 public:
-    Dummy(sf::Texture *look_from_game,sf::Texture *skill_look_from_game,sf::RectangleShape &game_boarder);
+    Dummy(int &arg_id, sf::Texture *look_from_game,sf::Texture *skill_look_from_game,sf::RectangleShape &game_boarder);
     virtual ~Dummy();
-protected:
+private:
     virtual void hit_box_position();
 };
 

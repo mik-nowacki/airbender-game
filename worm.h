@@ -6,10 +6,10 @@
 class Worm :public Enemy
 {
 public:
-    Worm(sf::Texture *look_from_game, sf::Texture *skill_look_from_game,sf::RectangleShape &game_boarder);
+    Worm(int &arg_id, sf::Texture *look_from_game, sf::Texture *skill_look_from_game,sf::RectangleShape &game_boarder);
     virtual ~Worm();
 
-protected:
+private:
     virtual void hit_box_position();
     virtual void walk_animate();
     virtual void attack_animate(float &angle_from_trigger);

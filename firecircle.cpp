@@ -1,6 +1,6 @@
 #include "firecircle.h"
 
-FireCircle::FireCircle(sf::Texture *tex, short ability)
+FireCircle::FireCircle(sf::Texture *tex, const short &ability)
 {
     this->texture = tex;
     this->setTexture(*texture);
@@ -14,7 +14,7 @@ void FireCircle::launchProjectile(sf::Vector2f &shooter, sf::Vector2f &target)
     this->setPosition(shooter);
 }
 
-void FireCircle::update_movement(float dt_)
+void FireCircle::update_movement(const float &dt_)
 {
     scale*=1.01f;
     this->setScale(scale,scale);

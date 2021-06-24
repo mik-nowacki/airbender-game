@@ -10,27 +10,24 @@ class Avatar :public Entity
 public:
     Avatar(sf::RenderTarget &win,sf::RectangleShape &game_boarder);
 
- // VARIABLES
-    std::vector<bool>permission = {true,true,true,
-                                   false,false,false,
-                                   false,false,false,
-                                   false,false,false};
+    void unlock(const short &num);
+    bool if_unlocked(const SKILLS &num);
   // METHODS
-    void steering(float dt_); // Avatar + Camera movement
-    void shooting(float dt_);
     void animate(float dt_,sf::RenderWindow &win);
-    void movement_animation();
     void get_textures(std::vector<sf::Texture> *mv_game, std::vector<sf::Texture> *at_game,
                       std::vector<sf::Texture> *sk_game, std::vector<sf::Texture> *ic_game,
                       std::vector<sf::Texture> *bt_game);
-    void attack_animation();
-
-    sf::View getView();
-    sf::RectangleShape trigger_area();
+    const sf::View getView();
+    const sf::RectangleShape trigger_area();
+    const sf::RectangleShape hitBox();
 
 private:
-    sf::Vector2f  start_pos={900.f,500.f};
+    void movement_animation();
+    void steering(float dt_); // Avatar + Camera movement
+    void shooting(float dt_);
+    void attack_animation();
 
+    sf::Vector2f  start_pos={900.f,500.f};
     sf::View view;
     sf::Vector2f mousePosView;
     sf::Vector2f mousePos;
@@ -63,6 +60,10 @@ private:
     int armor =100;  // +75 HP TEMPORARLY
     float add_dmg=0; // +25 DMG
     std::pair<bool,float> heal = {false,0}; // HEALS 5 HP EVERY SECOND
+    std::vector<bool>permission = {true,true,true,
+                                   false,false,false,
+                                   false,false,false,
+                                   false,false,false};
 
  // ATTACK ANIM VARS
     float pause_time = 0.5;

@@ -34,7 +34,7 @@ void Story::set_stage(short &stage)
     }
 }
 
-void Story::capturing(const float &dt_, sf::RectangleShape &player)
+void Story::capturing(const float &dt_, const sf::RectangleShape &player)
 {
     if (dead_soldiers>=7)
         unlocked=true;
@@ -56,7 +56,7 @@ void Story::capturing(const float &dt_, sf::RectangleShape &player)
             else if (capture_time >=9.8)
                 this->altar.setTexture(texture[4]);
             if (current_stage==BOSS)
-                stage_complete=true;
+                on_appa=true;
         }
         else
         {
@@ -70,79 +70,102 @@ void Story::capturing(const float &dt_, sf::RectangleShape &player)
 
 void Story::updateQuests(Avatar &player,sf::RenderTarget &game_window)
 {
-        game_window.draw(bender);
+    game_window.draw(bender);
 
-        switch (current_stage)
-        {
-        case WATER:
-            if (!player.permission[ICECONE])
-            { game_window.draw(text);
-                if (player.hit_box.getGlobalBounds().intersects(this->bender.getGlobalBounds()))
-                    player.permission[ICECONE]=true;
-            }
-            else if (!player.permission[HEAL]&&dead_creatures>=5)
-            { game_window.draw(text);
-                if (player.hit_box.getGlobalBounds().intersects(this->bender.getGlobalBounds()))
-                    player.permission[HEAL]=true;
-            }
-            else if (!player.permission[STUN]&&dead_creatures>=10)
-            { game_window.draw(text);
-                if (player.hit_box.getGlobalBounds().intersects(this->bender.getGlobalBounds()))
-                    player.permission[STUN]=true;
-            }
-            break;
-        case EARTH:
-            if (!player.permission[ROCK])
-            { game_window.draw(text);
-                if (player.hit_box.getGlobalBounds().intersects(this->bender.getGlobalBounds()))
-                    player.permission[ROCK]=true;
-            }
-            else if (!player.permission[ARMOR]&&dead_creatures>=2)
-            { game_window.draw(text);
-                if (player.hit_box.getGlobalBounds().intersects(this->bender.getGlobalBounds()))
-                    player.permission[ARMOR]=true;
-            }
-            else if (!player.permission[BOULDER]&&dead_creatures>=5)
-            { game_window.draw(text);
-                if (player.hit_box.getGlobalBounds().intersects(this->bender.getGlobalBounds()))
-                    player.permission[BOULDER]=true;
-            }
-            break;
-        case FIRE:
-            if (!player.permission[FIREBALL])
-            { game_window.draw(text);
-                if (player.hit_box.getGlobalBounds().intersects(this->bender.getGlobalBounds()))
-                    player.permission[FIREBALL]=true;
-            }
-            else if (!player.permission[DMG]&&dead_creatures>=5)
-            { game_window.draw(text);
-                if (player.hit_box.getGlobalBounds().intersects(this->bender.getGlobalBounds()))
-                    player.permission[DMG]=true;
-            }
-            else if (!player.permission[CIRCLE]&&dead_creatures>=10)
-            { game_window.draw(text);
-                if (player.hit_box.getGlobalBounds().intersects(this->bender.getGlobalBounds()))
-                    player.permission[CIRCLE]=true;
-            }
-            break;
-        case BOSS:
-            if (!player.permission[CIRCLE]) // just in case this won't initiate infinite times
-            for (auto unlock : player.permission)
-            {unlock=true;}
-            break;
+    switch (current_stage)
+    {
+    case WATER:
+        if (!player.if_unlocked(ICECONE))
+        { game_window.draw(text);
+            if (player.hitBy(this->bender))
+                player.unlock(ICECONE);
+        }
+        else if (!player.if_unlocked(HEAL)&&dead_creatures>=5)
+        { game_window.draw(text);
+            if (player.hitBy(this->bender))
+                player.unlock(HEAL);
+        }
+        else if (!player.if_unlocked(STUN)&&dead_creatures>=10)
+        { game_window.draw(text);
+            if (player.hitBy(this->bender))
+                player.unlock(STUN);
+        }
+        break;
+    case EARTH:
+        if (!player.if_unlocked(ROCK))
+        { game_window.draw(text);
+            if (player.hitBy(this->bender))
+                player.unlock(ROCK);
+        }
+        else if (!player.if_unlocked(ARMOR)&&dead_creatures>=2)
+        { game_window.draw(text);
+            if (player.hitBy(this->bender))
+                player.unlock(ARMOR);
+        }
+        else if (!player.if_unlocked(BOULDER)&&dead_creatures>=5)
+        { game_window.draw(text);
+            if (player.hitBy(this->bender))
+                player.unlock(BOULDER);
+        }
+        break;
+    case FIRE:
+        if (!player.if_unlocked(FIREBALL))
+        { game_window.draw(text);
+            if (player.hitBy(this->bender))
+                player.unlock(FIREBALL);
+        }
+        else if (!player.if_unlocked(DMG)&&dead_creatures>=5)
+        { game_window.draw(text);
+            if (player.hitBy(this->bender))
+                player.unlock(DMG);
+        }
+        else if (!player.if_unlocked(CIRCLE)&&dead_creatures>=10)
+        { game_window.draw(text);
+            if (player.hitBy(this->bender))
+                player.unlock(CIRCLE);
+        }
+        break;
+    case BOSS:
+        if (!player.if_unlocked(CIRCLE)) // just in case this won't initiate infinite times
+            for (short lck=TEMPEST; lck<12; lck++)
+            {player.unlock(lck);}
+        break;
     }
+}
+
+bool Story::stageComplete()
+{
+    return on_appa;
+}
+
+void Story::addDeadCreature()
+{
+    dead_creatures++;
+}
+void Story::addDeadSoldier()
+{
+    dead_soldiers++;
+}
+
+int Story::creaturesSlain()
+{
+    return dead_creatures;
+}
+int Story::soldiersKilled()
+{
+    return dead_soldiers;
 }
 
 void Story::updateStory(const float &game_dt, sf::RenderTarget &game_window,Avatar &player)
 {
     this->updateQuests(player,game_window);
-    this->capturing(game_dt, player.hit_box);
+    this->capturing(game_dt, player.hitBox());
     if (this->is_captured)
     {
         game_window.draw(appa);
 
-        if (player.hit_box.getGlobalBounds().intersects(appa.getGlobalBounds()))
-            this->stage_complete=true;
+        if (player.hitBy(appa))
+            this->on_appa=true;
     }
     game_window.draw(altar);
 }

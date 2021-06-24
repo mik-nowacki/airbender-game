@@ -5,14 +5,11 @@ Avatar::Avatar(sf::RenderTarget &win, sf::RectangleShape &game_boarder)
     view.setSize(win.getSize().x,win.getSize().y);
     view.setCenter(win.getSize().x/2.f,win.getSize().y/2.f);
     this->setPosition(start_pos);
-    this->hit_box.setSize(sf::Vector2f(40.f,90.f));
+    this->hit_box.setSize(sf::Vector2f(20.f,20.f));
 
     this->shoot_timer=0.5;
     this->map_edge=game_boarder;
     this->trigger_area_.setSize(sf::Vector2f(900.f,900.f));
-//    this->trigger_area_.setFillColor(sf::Color::Transparent);
-//    this->trigger_area_.setOutlineThickness(3.f);
-//    this->trigger_area_.setOutlineColor(sf::Color::Green);
     this->trigger_area_.setPosition(start_pos-sf::Vector2f(400.f,400.f));
 
     this->walkSize.resize(5);
@@ -94,14 +91,27 @@ void Avatar::updateGUI(sf::RenderTarget &win)
     win.draw(skill3);
 }
 
-sf::RectangleShape Avatar::trigger_area()
+const sf::RectangleShape Avatar::trigger_area()
 {
     return trigger_area_;
 }
 
-sf::View Avatar::getView()
+const sf::RectangleShape Avatar::hitBox()
+{
+    return hit_box;
+}
+
+const sf::View Avatar::getView()
 {
     return view;
+}
+void Avatar::unlock(const short &num)
+{
+    permission[num]=true;
+}
+bool Avatar::if_unlocked(const SKILLS &num)
+{
+    return permission[num];
 }
 
 void Avatar::get_textures(std::vector<sf::Texture> *mv_game, std::vector<sf::Texture> *at_game,
@@ -117,7 +127,6 @@ void Avatar::get_textures(std::vector<sf::Texture> *mv_game, std::vector<sf::Tex
     {
         walkSize[mv] = move_textures[mv].getSize();
     }
-    walkSize[IDLE].x /= 8;
     walkSize[MOVING_DOWN].x /= 10;
     walkSize[MOVING_UP].x /=11;
     walkSize[MOVING_LEFT].x /= 4;
@@ -163,29 +172,29 @@ void Avatar::steering(float dt_)
         this->animState = MOVING_RIGHT;
     }
     // if player is outside the map //
-    if (hit_box.getPosition().x<0 ) // push right
+    if (getPosition().x<0 ) // push right
     {
         this->move(avatar_movement_speed*dt_,0);
         view.move(avatar_movement_speed*dt_,0);
     }
-    else if (hit_box.getPosition().y<0) // push down
+    else if (getPosition().y<0) // push down
     {
         this->move(0,avatar_movement_speed*dt_);
         view.move(0,avatar_movement_speed*dt_);
     }
-    else if (hit_box.getPosition().x+hit_box.getGlobalBounds().width>map_edge.getGlobalBounds().width)  // push left
+    else if (getPosition().x+getGlobalBounds().width>map_edge.getGlobalBounds().width)  // push left
     {
         this->move(-avatar_movement_speed*dt_,0);
         view.move(-avatar_movement_speed*dt_,0);
     }
-    else if (hit_box.getPosition().y+hit_box.getGlobalBounds().height>map_edge.getGlobalBounds().height) // push up
+    else if (getPosition().y+getGlobalBounds().height>map_edge.getGlobalBounds().height) // push up
     {
         this->move(0,-avatar_movement_speed*dt_);
         view.move(0,-avatar_movement_speed*dt_);
     }
 
     this->trigger_area_.setPosition(getPosition()-sf::Vector2f(400.f,400.f));
-    this->hit_box.setPosition(sf::Vector2f(this->getPosition().x+20.f,this->getPosition().y));
+    this->hit_box.setPosition(sf::Vector2f(getPosition().x+25.f,getPosition().y+30));
 }
 
 void Avatar::shooting(float dt_)
@@ -217,55 +226,58 @@ void Avatar::shooting(float dt_)
             if(sf::Keyboard::isKeyPressed(sf::Keyboard::Num4))
                 chosen_element=FIRE;
         }
-
+/// koszty dla umiejętności muszą być oddzielnie w if-ach aby nie aktywowały się dla zablokowanych umiejętności
         if (mana>=15)
         {
             if(sf::Mouse::isButtonPressed(sf::Mouse::Left)&&ability_cooldown[0]>=1)
-            {this->ability_cooldown[0]=0; this->mana-=15; shot = true; // BASICS
+            { // BASICS
                 if(chosen_element==AIR&&permission[TEMPEST])
-                {
+                {this->shot=true;
                     projectile = std::make_unique<Projectile>();
                     projectile->make_tempest(&skill_textures[TEMPEST],short(TEMPEST));
                     projectile->launchProjectile(this->shooter_center,this->mousePos);
                     shots.push_back(std::move(projectile));
-
+                    this->ability_cooldown[0]=0; this->mana-=15;
                 }
                 if((chosen_element==WATER)&&permission[ICECONE])
-                {
+                {this->shot=true;
                     projectile = std::make_unique<Projectile>();
                     projectile->make_iceCone(&skill_textures[ICECONE],short(ICECONE));
                     projectile->launchProjectile(this->shooter_center,this->mousePos);
                     this->shots.push_back(std::move(projectile));
+                    this->ability_cooldown[0]=0; this->mana-=15;
                 }
                 if((chosen_element==EARTH)&&permission[ROCK])
-                {
+                {this->shot=true;
                     projectile = std::make_unique<Projectile>();
                     projectile->make_rock(&skill_textures[ROCK],short(ROCK));
                     projectile->launchProjectile(this->shooter_center,this->mousePos);
                     this->shots.push_back(std::move(projectile));
+                    this->ability_cooldown[0]=0; this->mana-=15;
                 }
                 if((chosen_element==FIRE)&&permission[FIREBALL])
-                {
+                {this->shot=true;
                     for (int i =0; i<=add_dmg; i++)
                     {
                         projectile = std::make_unique<Projectile>();
                         projectile->make_fireball(&skill_textures[FIREBALL],short(FIREBALL));
                         projectile->launchProjectile(this->shooter_center,this->mousePos);
                         this->shots.push_back(std::move(projectile));
+                        this->ability_cooldown[0]=0; this->mana-=15;
                     }
                 }
-
             }
         }
         if (mana>=30)
         {
-            if(sf::Keyboard::isKeyPressed(sf::Keyboard::LShift)&&ability_cooldown[1]>=10)
-            {this->ability_cooldown[1]=0; this->mana-=30;  //PASSIVES
+            if(sf::Keyboard::isKeyPressed(sf::Keyboard::LShift)&&ability_cooldown[1]>=5)
+            { //PASSIVES
                 if((chosen_element==AIR)&&permission[MS])
                 {
                     this->avatar_movement_speed = 900.f;
                     passive_timer.first=true;
                     passive_timer.second=0;
+                    this->ability_cooldown[1]=0; this->mana-=30;
                 }
                 if(chosen_element==WATER&&permission[HEAL])
                 {
@@ -273,27 +285,31 @@ void Avatar::shooting(float dt_)
                     this->heal.second=0;
                     passive_timer.first=true;
                     passive_timer.second=0;
-
+                    this->ability_cooldown[1]=0; this->mana-=30;
+                    HPbar.setFillColor(sf::Color::Green);
                 }
                 if((chosen_element==EARTH)&&permission[ARMOR])
                 {
                     this->armor = this->HP;
                     this->HP= armor+75;
+                    HPbar.setFillColor(sf::Color::Yellow);
                     passive_timer.first=true;
                     passive_timer.second=0;
+                    this->ability_cooldown[1]=0; this->mana-=30;
                 }
                 if((chosen_element==FIRE)&&permission[DMG])
                 {
                     this->add_dmg=1;
                     passive_timer.first=true;
                     passive_timer.second=0;
+                    this->ability_cooldown[1]=0; this->mana-=30;
                 }
             }
         }
         if (mana>=50)
         {
-            if(sf::Keyboard::isKeyPressed(sf::Keyboard::Space)&&ability_cooldown[2]>=15)
-            {this->ability_cooldown[2]=0; this->mana-=50; this->shot=true; // SUPERS
+            if(sf::Keyboard::isKeyPressed(sf::Keyboard::Space)&&ability_cooldown[2]>=8)
+            {// SUPERS
                 if((chosen_element==AIR)&&permission[CDR])
                 {
                     this->ability_cooldown[0]+=1;
@@ -301,28 +317,30 @@ void Avatar::shooting(float dt_)
                     this->ability_cooldown[2]+=15;
                     this->element_swap = 2;
                     this->mana=100;
+                    this->ability_cooldown[2]=0; this->mana-=50;
                 }
                 if((chosen_element==WATER)&&permission[STUN])
-                {
+                {this->shot=true;
                     projectile = std::make_unique<Projectile>();
                     projectile->make_boulder(&skill_textures[STUN],short(STUN));
                     projectile->launchProjectile(this->shooter_center,this->mousePos);
                     this->shots.push_back(std::move(projectile));
-
+                    this->ability_cooldown[2]=0; this->mana-=50;
                 }
                 if((chosen_element==EARTH)&&permission[BOULDER])
-                {
+                {this->shot=true;
                     projectile = std::make_unique<Projectile>();
                     projectile->make_boulder(&skill_textures[BOULDER],short(BOULDER));
                     projectile->launchProjectile(this->shooter_center,this->mousePos);
                     this->shots.push_back(std::move(projectile));
-
+                    this->ability_cooldown[2]=0; this->mana-=50;
                 }
                 if((chosen_element==FIRE)&&permission[CIRCLE])
-                {
+                {this->shot=true;
                     projectile = std::make_unique<FireCircle>(&skill_textures[CIRCLE],short(CIRCLE));
                     projectile->launchProjectile(this->shooter_center,this->mousePos);
                     this->shots.push_back(std::move(projectile));
+                    this->ability_cooldown[2]=0; this->mana-=50;
                 }
             }
         }
@@ -351,6 +369,7 @@ void Avatar::shooting(float dt_)
             this->add_dmg=0;
             if (HP>armor) // reduce any excess HP
                 this->HP=armor;
+            this->HPbar.setFillColor(sf::Color::Red);
         }
     }
 
@@ -362,23 +381,14 @@ void Avatar::movement_animation()
     {
         this->setTexture(move_textures[IDLE]);
         this->setTextureRect(sf::IntRect(walkSize[IDLE].x*0,0,walkSize[IDLE].x,walkSize[IDLE].y));
-        //        if (this->animation_timer.getElapsedTime().asSeconds() > 0.15)
-        //        {
-        //            if (this->idle_counter>7)
-        //                this->idle_counter=0;
-        //            this->setTextureRect(sf::IntRect(walkSize[IDLE].x*idle_counter,0,walkSize[IDLE].x,walkSize[IDLE].y));
-        //            this->idle_counter++;
-        //            this->animation_timer.restart();
-        //        }
     }
     else if (this->animState==MOVING_UP)
     {
-        this->setTexture(move_textures[MOVING_UP]);
-        //        this->setTextureRect(sf::IntRect(walkSize[MOVING_UP].x*idle_counter,0,walkSize[MOVING_UP].x,walkSize[MOVING_UP].y));
         if (this->animation_timer.getElapsedTime().asSeconds() > 0.15)
         {
-            if (this->up_counter>11)
+            if (this->up_counter>10)
                 this->up_counter=0;
+            this->setTexture(move_textures[MOVING_UP]);
             this->setTextureRect(sf::IntRect(walkSize[MOVING_UP].x*up_counter,0,walkSize[MOVING_UP].x,walkSize[MOVING_UP].y));
             this->up_counter++;
             this->animation_timer.restart();
@@ -386,12 +396,11 @@ void Avatar::movement_animation()
     }
     else if (this->animState==MOVING_DOWN)
     {
-        this->setTexture(move_textures[MOVING_DOWN]);
-        //        this->setTextureRect(sf::IntRect(walkSize[MOVING_DOWN].x*idle_counter,0,walkSize[MOVING_DOWN].x,walkSize[MOVING_DOWN].y));
         if (this->animation_timer.getElapsedTime().asSeconds() > 0.15f)
         {
             if (this->down_counter>10)
                 this->down_counter=0;
+            this->setTexture(move_textures[MOVING_DOWN]);
             this->setTextureRect(sf::IntRect(walkSize[MOVING_DOWN].x*down_counter,0,walkSize[MOVING_DOWN].x,walkSize[MOVING_DOWN].y));
             this->down_counter++;
             this->animation_timer.restart();
@@ -399,12 +408,11 @@ void Avatar::movement_animation()
     }
     else if (this->animState==MOVING_LEFT)
     {
-        this->setTexture(move_textures[MOVING_LEFT]);
-        //        this->setTextureRect(sf::IntRect(walkSize[MOVING_LEFT].x*idle_counter,0,walkSize[MOVING_LEFT].x,walkSize[MOVING_LEFT].y));
         if (this->animation_timer.getElapsedTime().asSeconds() > 0.15)
         {
             if (this->left_counter>3)
                 this->left_counter=0;
+            this->setTexture(move_textures[MOVING_LEFT]);
             this->setTextureRect(sf::IntRect(walkSize[MOVING_LEFT].x*left_counter,0,walkSize[MOVING_LEFT].x,walkSize[MOVING_LEFT].y));
             this->left_counter++;
             this->animation_timer.restart();
@@ -412,12 +420,11 @@ void Avatar::movement_animation()
     }
     else if (this->animState==MOVING_RIGHT)
     {
-        this->setTexture(move_textures[MOVING_RIGHT]);
-        //        this->setTextureRect(sf::IntRect(walkSize[MOVING_RIGHT].x*idle_counter,0,walkSize[MOVING_RIGHT].x,walkSize[MOVING_RIGHT].y));
         if (this->animation_timer.getElapsedTime().asSeconds() > 0.15)
         {
             if (this->right_counter>3)
                 this->right_counter=0;
+            this->setTexture(move_textures[MOVING_RIGHT]);
             this->setTextureRect(sf::IntRect(walkSize[MOVING_RIGHT].x*right_counter,0,walkSize[MOVING_RIGHT].x,walkSize[MOVING_RIGHT].y));
             this->right_counter++;
             this->animation_timer.restart();
@@ -431,48 +438,45 @@ void Avatar::attack_animation()
     {
         if (this->angle>-45 && this->angle<= 45)
         {
-            this->setTexture(attack_textures[RIGHT]);
             if (this->animation_timer.getElapsedTime().asSeconds() > 0.1 )
             {
                 this->setTextureRect(sf::IntRect(attackSize[RIGHT].x*at_counter, 0,attackSize[RIGHT].x,attackSize[RIGHT].y)); //RIGHT
+                this->setTexture(attack_textures[RIGHT]);
                 this->at_counter++;
                 this->animation_timer.restart();
             }
         }
         if (this->angle>-135 && this->angle<= -45)
         {
-            this->setTexture(attack_textures[UP]);
             if (this->animation_timer.getElapsedTime().asSeconds() > 0.1 )
             {
-                this->setTextureRect(sf::IntRect(attackSize[UP].x*at_counter, 0,attackSize[UP].x,attackSize[UP].y)); //RIGHT
+                this->setTextureRect(sf::IntRect(attackSize[UP].x*at_counter, 0,attackSize[UP].x,attackSize[UP].y)); // UP
+                this->setTexture(attack_textures[UP]);
                 this->at_counter++;
                 this->animation_timer.restart();
             }
         }
-
         if (this->angle> 45 && this->angle<= 135)
         {
-            this->setTexture(attack_textures[DOWN]);
             if (this->animation_timer.getElapsedTime().asSeconds() > 0.1 )
             {
-                this->setTextureRect(sf::IntRect(attackSize[DOWN].x*at_counter, 0,attackSize[DOWN].x,attackSize[DOWN].y)); //RIGHT
+                this->setTextureRect(sf::IntRect(attackSize[DOWN].x*at_counter, 0,attackSize[DOWN].x,attackSize[DOWN].y)); // DOWN
+                this->setTexture(attack_textures[DOWN]);
                 this->at_counter++;
                 this->animation_timer.restart();
             }
         }
-
         if (this->angle>135 || this->angle<=-135 )
         {
-            this->setTexture(attack_textures[LEFT]);
             if (this->animation_timer.getElapsedTime().asSeconds() > 0.1 )
             {
-                this->setTextureRect(sf::IntRect(attackSize[LEFT].x*at_counter, 0,attackSize[LEFT].x,attackSize[LEFT].y)); //RIGHT
+                this->setTextureRect(sf::IntRect(attackSize[LEFT].x*at_counter, 0,attackSize[LEFT].x,attackSize[LEFT].y)); // LEFT
+                this->setTexture(attack_textures[LEFT]);
                 this->at_counter++;
                 this->animation_timer.restart();
             }
         }
     }
-
 }
 
 void Avatar::animate(float dt_, sf::RenderWindow &win)

@@ -2,6 +2,17 @@
 
 Projectile::Projectile(){}
 Projectile::~Projectile(){}
+
+bool Projectile::canErase()
+{
+    sf::Vector2f scale = getScale();
+
+    return scale.x>15.f;
+}
+short Projectile::Type()
+{
+    return type;
+}
 void Projectile::deal(const int arg_id)
 {
     id.emplace_back(arg_id);
@@ -28,14 +39,13 @@ void Projectile::launchProjectile(sf::Vector2f &shooter, sf::Vector2f &target)
 
     if ((angle>90 || angle<=-90 )&&type==5)
         this->setScale(1.f,-1.f); // LEFT
-
 }
-void Projectile::update_movement(float dt_)
+void Projectile::update_movement(const float &dt_)
 {
         this->move(this->speedVector*dt_);
 }
 
-void Projectile::make_tempest(sf::Texture *tex, short ability)
+void Projectile::make_tempest(sf::Texture *tex, const short &ability)
 {
     this->texture=tex;
     this->setTexture(*texture);
@@ -43,7 +53,7 @@ void Projectile::make_tempest(sf::Texture *tex, short ability)
     this->maxSpeed = 600.f;
     this->type = ability;
 }
-void Projectile::make_iceCone(sf::Texture *tex, short ability)
+void Projectile::make_iceCone(sf::Texture *tex, const short &ability)
 {
     this->texture = tex;
     this->setTexture(*texture);
@@ -51,7 +61,7 @@ void Projectile::make_iceCone(sf::Texture *tex, short ability)
     this->maxSpeed = 400;
     this->type = ability;
 }
-void Projectile::make_rock(sf::Texture *tex, short ability)
+void Projectile::make_rock(sf::Texture *tex, const short &ability)
 {
     this->texture = tex;
     this->setTexture(*texture);
@@ -59,7 +69,7 @@ void Projectile::make_rock(sf::Texture *tex, short ability)
     this->maxSpeed = 500;
     this->type = ability;
 }
-void Projectile::make_fireball(sf::Texture *tex, short ability)
+void Projectile::make_fireball(sf::Texture *tex, const short &ability)
 {
     this->texture = tex;
     this->setTexture(*texture);
@@ -67,7 +77,7 @@ void Projectile::make_fireball(sf::Texture *tex, short ability)
     this->maxSpeed = 550;
     this->type = ability;
 }
-void Projectile::make_stun(sf::Texture *tex, short ability)
+void Projectile::make_stun(sf::Texture *tex, const short &ability)
 {
     this->texture = tex;
     this->setTexture(*texture);
@@ -75,7 +85,7 @@ void Projectile::make_stun(sf::Texture *tex, short ability)
     this->maxSpeed = 600;
     this->type = ability;
 }
-void Projectile::make_boulder(sf::Texture *tex, short ability)
+void Projectile::make_boulder(sf::Texture *tex, const short &ability)
 {
     this->texture = tex;
     this->setTexture(*texture);

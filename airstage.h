@@ -9,9 +9,9 @@ class AirStage :public Game
 public:
     AirStage();
 
+private:
     virtual void spawn_creatures();
     virtual void upload_waves();
-
 
 };
 

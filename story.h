@@ -14,16 +14,20 @@ public:
     void set_stage(short &stage);
     void updateStory(const float &game_dt, sf::RenderTarget &game_window, Avatar &player);
     void updateQuests(Avatar &player,sf::RenderTarget &game_window);
-    void capturing(const float &dt_, sf::RectangleShape &player);
+    void capturing(const float &dt_, const sf::RectangleShape &player);
+    bool stageComplete();  // if window can be closed
+    void addDeadCreature();
+    void addDeadSoldier();
+    int creaturesSlain();
+    int soldiersKilled();
 
+private:
     bool is_captured = false;
     bool unlocked = false;
-    bool stage_complete;
     int dead_creatures=0;
     int dead_soldiers=0;
     short current_stage;
-
-private:
+    bool on_appa=false;
 
     sf::Sprite bender,text;
     std::vector<sf::Texture> benders;

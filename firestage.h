@@ -8,6 +8,7 @@ class FireStage :public Game
 {
 public:
     FireStage();
+private:
     virtual void spawn_creatures();
     virtual void upload_waves();
 };

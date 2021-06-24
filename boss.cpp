@@ -1,6 +1,6 @@
 #include "boss.h"
 
-Boss::Boss(sf::Texture *look_from_game, sf::Texture *skill_look_from_game,sf::RectangleShape &game_boarder) : Enemy(look_from_game,skill_look_from_game,game_boarder)
+Boss::Boss(int &arg_id, sf::Texture *look_from_game, sf::Texture *skill_look_from_game,sf::RectangleShape &game_boarder) : Enemy(arg_id,look_from_game,skill_look_from_game,game_boarder)
 {
     setPosition(sf::Vector2f(1000.f,1000.f));
     setScale(3.5f,3.5f);
@@ -13,12 +13,12 @@ Boss::Boss(sf::Texture *look_from_game, sf::Texture *skill_look_from_game,sf::Re
     this->setTextureRect(sf::IntRect(textureSize.x*0, 0,textureSize.x,textureSize.y));
     this->move_dir= IDLE;
 
-    hit_box.setSize(sf::Vector2f(65,textureSize.y*3));
+    hit_box.setSize(sf::Vector2f(50,textureSize.y+50));
 
     enemy_type = FIRE_LORD;
 
     HP=300;
-    if_triggered =false;
+    if_triggered =true;
     shoot_timer=100;
 
     bar.setSize(sf::Vector2f(HP,20));
@@ -28,13 +28,10 @@ Boss::Boss(sf::Texture *look_from_game, sf::Texture *skill_look_from_game,sf::Re
     bar.setFillColor(sf::Color::Red);
     bar_back.setFillColor(sf::Color(25,25,25,200));
 }
-Boss::~Boss()
-{
-
-}
+Boss::~Boss(){}
 void Boss::untrigger(){if_triggered=true;}
 void Boss::root(){}
-void Boss::hit_box_position(){this->hit_box.setPosition(sf::Vector2f(this->getPosition().x+95.f,this->getPosition().y+30));}
+void Boss::hit_box_position(){this->hit_box.setPosition(sf::Vector2f(this->getPosition().x+80.f,this->getPosition().y+80));}
 void Boss::walk_animate()
 {
     switch(this->move_dir)
@@ -45,6 +42,7 @@ void Boss::walk_animate()
         case MOVING_LEFT: this->setTextureRect(sf::IntRect(textureSize.x*2, 0,textureSize.x,textureSize.y)); break;
         case MOVING_RIGHT: this->setTextureRect(sf::IntRect(textureSize.x*1, 0,textureSize.x,textureSize.y)); break;
     }
+    hit_box_position();
 }
 
 void Boss::attack_animate(float &angle_from_trigger)

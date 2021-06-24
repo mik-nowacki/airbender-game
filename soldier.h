@@ -6,10 +6,10 @@
 class Soldier :public Enemy
 {
 public:
-    Soldier(sf::Texture *look_from_game, sf::Texture *skill_look_from_game,sf::RectangleShape &game_boarder);
+    Soldier(int &arg_id, sf::Texture *look_from_game, sf::Texture *skill_look_from_game,sf::RectangleShape &game_boarder);
     virtual ~Soldier();
 
-protected:
+private:
     virtual void hit_box_position();
     virtual void walk_animate();
     virtual void attack_animate(float &angle_from_trigger);

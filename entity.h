@@ -20,14 +20,22 @@ public:
     Entity();
     virtual ~Entity();
 
-    sf::RectangleShape hit_box = sf::RectangleShape(sf::Vector2f(100.f,100.f));
-    std::vector<std::shared_ptr<Projectile>> shots;
     int getHP();
-    void reduceHP(const int dmg);
+    void reduceHP(const int &dmg);
+    bool hitBy(const sf::Sprite &hb);
+    const sf::Sprite bullet(const int &k);
+    size_t shotsSize();
+    void applyDMG(const int &k, const int &ID);
+    short shotType(const int &k );
+    bool matchID(const int &k, const int &ID);
+    void eraseShot(const int &k);
+    void drawShots(sf::RenderTarget &win);
+    bool projectileScale(const int &k);
 
 protected:
+    sf::RectangleShape hit_box = sf::RectangleShape(sf::Vector2f(100.f,100.f));
+    std::vector<std::shared_ptr<Projectile>> shots;
     virtual void updateGUI(sf::RenderTarget &win);
-
     int HP;
 
     float angle;

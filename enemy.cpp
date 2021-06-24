@@ -1,7 +1,9 @@
 #include "enemy.h"
 
-Enemy::Enemy(sf::Texture *look_from_game, sf::Texture *skill_look_from_game, sf::RectangleShape &game_boarder)
+Enemy::Enemy(int &arg_id, sf::Texture *look_from_game, sf::Texture *skill_look_from_game, sf::RectangleShape &game_boarder)
 {
+    id=arg_id;
+
     this->setPosition(sf::Vector2f(rand()%1800,rand()%1800));
     this->map_edge = game_boarder;
     this->clock.restart();
@@ -18,9 +20,19 @@ Enemy::~Enemy()
 }
 void Enemy::walk_animate(){}
 void Enemy::attack_animate(float &angle_from_trigger){}
+void Enemy::hit_box_position(){}
+int Enemy::getID()
+{
+    return id;
+}
+short Enemy::enemyType()
+{
+    return enemy_type;
+}
 void Enemy::updateGUI(sf::RenderTarget &win)
 {
-    bar.setPosition(hit_box.getPosition()+sf::Vector2f(50,-25));
+    hit_box_position();
+    bar.setPosition(hit_box.getPosition()+sf::Vector2f(20,-50));
     bar_back.setPosition(bar.getPosition());
     bar.setSize(sf::Vector2f(this->HP,20));
 
@@ -78,7 +90,6 @@ void Enemy::trigger_AI(const sf::RectangleShape &trigger_box)
         }
     }
 }
-void Enemy::hit_box_position(){}
 
 void Enemy::AI_movement(const float &dt_)
 {
@@ -132,4 +143,17 @@ void Enemy::AI(const float &dt_, const sf::RectangleShape &avatar_target, sf::Re
         this->walk_animate();
     }
     this->updateGUI(win);
+}
+
+void Enemy::deadShots(const float &dt_)
+{
+    for (size_t j=0; j<shotsSize();j++)
+    {
+        shots[j]->update_movement(dt_);
+    }
+}
+
+bool Enemy::shotsLeft()
+{
+    return shots.empty();
 }

@@ -6,9 +6,9 @@
 class FireCircle :public Projectile
 {
 public:
-    FireCircle(sf::Texture *tex, short ability);
+    FireCircle(sf::Texture *tex, const short &ability);
 
-    virtual void update_movement(float dt_);
+    virtual void update_movement(const float &dt_);
     virtual void launchProjectile(sf::Vector2f &shooter, sf::Vector2f &target);
 
 private:

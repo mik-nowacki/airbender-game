@@ -6,9 +6,9 @@
 class Boss :public Enemy
 {
 public:
-    Boss(sf::Texture *look_from_game, sf::Texture *skill_look_from_game,sf::RectangleShape &game_boarder);
+    Boss(int &arg_id, sf::Texture *look_from_game, sf::Texture *skill_look_from_game,sf::RectangleShape &game_boarder);
     virtual ~Boss();
-protected:
+private:
     virtual void hit_box_position();
     virtual void untrigger();
     virtual void root();

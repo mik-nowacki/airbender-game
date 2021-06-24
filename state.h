@@ -8,7 +8,7 @@ class State
 {
 public:
     State();
-    void initialie_program();
+    void initialize_program();
 
 private:
     std::unique_ptr<Menu> menu;

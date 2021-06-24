@@ -10,13 +10,16 @@ enum EFFECT {SLOW,ROOT,IGNITE};
 class Enemy :public Entity
 {
 public:
-    Enemy(sf::Texture *look_from_game, sf::Texture *skill_look_from_game,sf::RectangleShape &game_boarder);
+    Enemy(int &arg_id,sf::Texture *look_from_game, sf::Texture *skill_look_from_game,sf::RectangleShape &game_boarder);
     virtual ~Enemy();
 
     void AI(const float &dt_,const sf::RectangleShape &avatar_target, sf::RenderTarget &win);
-    short enemy_type;
+    void deadShots(const float &dt_);
+    short enemyType();
     void untrigger();
     void root();
+    int getID();
+    bool shotsLeft(); // idicates if object can be deleated from memory when dead
 
 protected:
 
@@ -45,6 +48,8 @@ protected:
     bool if_triggered = false;
     float pause_time=1.5;
     float shot_interval;
+    int id;
+    short enemy_type;
 };
 
 #endif // ENEMY_H

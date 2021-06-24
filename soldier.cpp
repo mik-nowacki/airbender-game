@@ -1,6 +1,6 @@
 #include "soldier.h"
 
-Soldier::Soldier(sf::Texture *look_from_game, sf::Texture *skill_look_from_game,sf::RectangleShape &game_boarder) : Enemy(look_from_game,skill_look_from_game,game_boarder)
+Soldier::Soldier(int &arg_id, sf::Texture *look_from_game, sf::Texture *skill_look_from_game,sf::RectangleShape &game_boarder) : Enemy(arg_id,look_from_game,skill_look_from_game,game_boarder)
 {
     this->setScale(3.5f,3.5f);
 
@@ -8,7 +8,7 @@ Soldier::Soldier(sf::Texture *look_from_game, sf::Texture *skill_look_from_game,
     textureSize.x /=8;
     this->setTextureRect(sf::IntRect(textureSize.x*2, 0,textureSize.x,textureSize.y));
 
-    this->hit_box.setPosition(sf::Vector2f(this->getPosition().x,this->getPosition().y));
+    hit_box.setSize(sf::Vector2f(25,60));
 
     this->enemy_type = SOLDIER;
 
@@ -26,7 +26,7 @@ Soldier::Soldier(sf::Texture *look_from_game, sf::Texture *skill_look_from_game,
 
 Soldier::~Soldier(){}
 
-void Soldier::hit_box_position(){this->hit_box.setPosition(sf::Vector2f(this->getPosition().x,this->getPosition().y));}
+void Soldier::hit_box_position(){this->hit_box.setPosition(sf::Vector2f(this->getPosition().x+35,this->getPosition().y+30));}
 
 void Soldier::walk_animate()
 {

@@ -12,13 +12,13 @@ class Menu
 public:
     Menu();
     void openMenu();
+    bool get_break();
 
 private:
     std::unique_ptr<sf::RenderWindow> menu_window;
-    sf::Sprite button;
     sf::Sprite new_game;
-    sf::Sprite options;
     sf::Texture menu_texture;
+    bool close_program=false;
 };
 
 #endif // MENU_H
